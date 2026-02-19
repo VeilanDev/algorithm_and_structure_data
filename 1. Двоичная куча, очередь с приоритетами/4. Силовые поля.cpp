@@ -14,14 +14,17 @@ struct PointsLess {
 
 int main() {
 	int n, count; cin >> n; cin >> count;
-	priority_queue<Point, vector<Point>, PointsLess> rect;
+	priority_queue<Point, vector<Point>, PointsLess> rect1;
 	for (int i = 0; i < n; i++) {
 		int x, y; cin >> x; cin >> y;
-		rect.push({x, y});
+		rect1.push({x, y});
 	}
+	priority_queue<Point, vector<Point>, PointsLess> rect2 = rect1;
 
-	while (rect.size() > 0) {
-		Point xy = rect.top(); rect.pop();
-		cout << xy.x << "," << xy.y << " ";
-	}
+	Point xy1 = rect1.top(); rect1.pop();
+	Point xy2 = rect2.top(); rect2.pop();
+
+	int s = xy1.x * xy2.y;
+	cout << s;
+
 }
