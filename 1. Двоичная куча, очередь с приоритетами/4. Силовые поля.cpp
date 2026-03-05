@@ -1,30 +1,57 @@
-#include <queue>
 #include <iostream>
+#include <algorithm>
+#include <queue>
+#include <vector>
 using namespace std;
 
-struct Point {
-	int x, y;
+struct Rect {
+    long long x, y;
 };
 
-struct PointsLess {
-	bool operator () (const Point& p1, const Point& p2) {
-		return p1.x * p1.x + p1.y * p1.y < p2.x * p2.x + p2.y * p2.y;
-	}
-};
+bool compareByX(const Rect& a, const Rect& b) {
+    return a.x > b.x;
+}
 
 int main() {
-	int n, count; cin >> n; cin >> count;
-	priority_queue<Point, vector<Point>, PointsLess> rect1;
-	for (int i = 0; i < n; i++) {
-		int x, y; cin >> x; cin >> y;
-		rect1.push({x, y});
-	}
-	priority_queue<Point, vector<Point>, PointsLess> rect2 = rect1;
+    int n, k;
+    cin >> n >> k;
+    
+    vector<Rect> rects(n);
+    for (int i = 0; i < n; i++) {
+        cin >> rects[i].x >> rects[i].y;
+    }
+    
+    sort(rects.begin(), rects.end(), compareByX);
+    
+	priority_queue<long long> pq;
+    long long maxArea = 0;
+    
+	for (int i = 0; i < k; i++) {
+        pq.push(rects[i].y);
+    }
 
-	Point xy1 = rect1.top(); rect1.pop();
-	Point xy2 = rect2.top(); rect2.pop();
-
-	int s = xy1.x * xy2.y;
-	cout << s;
-
+    priority_queue<long long> minYHeap;
+    
+    for (int i = 0; i < k; i++) {
+        minYHeap.push(-rects[i].y);
+    }
+    
+    long long minX = rects[k-1].x;
+    long long minY = -minYHeap.top();
+    maxArea = minX * minY;
+    
+    for (int i = k; i < n; i++) {
+        if (rects[i].y <= minY) {
+            continue;
+        }
+        minYHeap.pop();
+        minYHeap.push(-rects[i].y);
+        minY = -minYHeap.top();
+        minX = rects[i].x;
+        
+        maxArea = max(maxArea, minX * minY);
+    }
+    
+    cout << maxArea << endl;
+    return 0;
 }
